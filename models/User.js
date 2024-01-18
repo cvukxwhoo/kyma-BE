@@ -29,7 +29,7 @@ const UserSchema = mongoose.Schema({
     type: String,
     default: format(new Date(), "MMM dd, yyyy"),
   },
-  upadateAt: {
+  updatedAt: {
     type: String,
     default: format(new Date(), "MMM dd, yyyy"),
   },
