@@ -1,6 +1,12 @@
 import { format } from "date-fns";
 import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+// ENV
+dotenv.config();
+
+const port = process.env.PORT || 3002;
 
 const ProductSchema = mongoose.Schema({
   name: {
@@ -15,7 +21,15 @@ const ProductSchema = mongoose.Schema({
     type: Number,
     require: true,
   },
-  description: {
+  discountPrice: {
+    type: Number,
+    require: false,
+  },
+  warrantyPeriod: {
+    type: Number,
+    require: false,
+  },
+  origin: {
     type: String,
     require: true,
   },
@@ -37,9 +51,16 @@ const ProductSchema = mongoose.Schema({
     type: String,
     require: true,
   },
+  imageUrl: {
+    type: String,
+  },
   isActive: {
     type: Boolean,
-    require: true,
+    require: false,
+  },
+  salientFeatures: {
+    type: [],
+    require: false,
   },
   createdAt: {
     type: String,
