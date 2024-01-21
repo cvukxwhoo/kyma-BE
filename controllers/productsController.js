@@ -52,6 +52,7 @@ const productController = {
     }
   },
 
+  // EDIT
   editProduct: async (req, res) => {
     try {
       const { id } = req.params;
@@ -75,6 +76,33 @@ const productController = {
       console.error("Error edit product item:", error);
       res.status(400).json({
         message: "Failed to upload item",
+        error: error.message, // Include the error message in the response
+      });
+    }
+  },
+
+  // GET PRODUCT BY ID
+  getProductById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const product = req.body;
+      const findProduct = await ProductSchema.findOne(
+        {
+          _id: id,
+        },
+        product
+      ).populate("brands", "brandName -_id");
+      if (findProduct) {
+        res.status(StatusCodes.OK).json({
+          message: "Get Product By ID Successfully",
+          data: findProduct,
+        });
+        return;
+      }
+    } catch (error) {
+      console.error("Error find product:", error);
+      res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Failed to find product",
         error: error.message, // Include the error message in the response
       });
     }

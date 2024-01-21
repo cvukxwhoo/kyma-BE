@@ -1,12 +1,6 @@
 import { format } from "date-fns";
 import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-
-// ENV
-dotenv.config();
-
-const port = process.env.PORT || 3002;
 
 const ProductSchema = mongoose.Schema({
   name: {
@@ -31,17 +25,14 @@ const ProductSchema = mongoose.Schema({
   },
   origin: {
     type: String,
-    require: true,
+    require: false,
   },
   quanities: {
     type: Number,
     require: true,
   },
   brands: { type: mongoose.Schema.Types.ObjectId, ref: "brands" },
-  category: {
-    type: String,
-    required: true,
-  },
+  category: { type: mongoose.Schema.Types.ObjectId, ref: "categories" },
   code: {
     type: String,
     require: true,

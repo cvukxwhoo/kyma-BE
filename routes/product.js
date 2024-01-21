@@ -12,6 +12,13 @@ const productRouter = express.Router();
 // GET
 productRouter.get("/", upload.single("image"), productController.getAllProduct);
 
+// GET Details Product BY ID
+productRouter.get(
+  "/details/:id",
+  upload.single("image"),
+  productController.getProductById
+);
+
 // CREATE
 productRouter.post("/", upload.single("image"), productController.postProduct);
 

@@ -12,6 +12,7 @@ import registerRouter from "./routes/register.js";
 import loginRouter from "./routes/login.js";
 import productRouter from "./routes/product.js";
 import brandRouter from "./routes/brand.js";
+import categoryRouter from "./routes/category.js";
 
 const app = express();
 mongoose.connect(
@@ -32,6 +33,7 @@ app.use("/register", registerRouter);
 app.use("/login", loginRouter);
 app.use("/api/products", productRouter);
 app.use("/api/brands", brandRouter);
+app.use("/api/categories", categoryRouter);
 
 app.listen(port, () => {
   console.log(`Server has been run on port ${port}!`);
