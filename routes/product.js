@@ -10,7 +10,11 @@ const productRouter = express.Router();
 
 // PRODUCT
 // GET
-productRouter.get("/", upload.single("image"), productController.getAllProduct);
+productRouter.get(
+  "/:categoryId",
+  upload.single("image"),
+  productController.getProductByIdCategory
+);
 
 // GET Details Product BY ID
 productRouter.get(

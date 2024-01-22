@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import ProductSchema from "../models/Product.js";
 import { StatusCodes } from "http-status-codes";
 
@@ -103,6 +104,30 @@ const productController = {
       console.error("Error find product:", error);
       res.status(StatusCodes.BAD_REQUEST).json({
         message: "Failed to find product",
+        error: error.message, // Include the error message in the response
+      });
+    }
+  },
+
+  // GET ALL PRODUCT BY ID CATEGORY
+  getProductByIdCategory: async (req, res) => {
+    try {
+      const { categoryId } = req.params;
+      const product = await ProductSchema.find({
+        category: new ObjectId(categoryId),
+      }).populate("category.category");
+
+      if (product) {
+        res.status(StatusCodes.OK).json({
+          message: "Get Product By Category ID Successfully",
+          data: product,
+        });
+        return;
+      }
+    } catch (error) {
+      console.error("Error find product:", error);
+      res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Failed To Find Product By Category ID ",
         error: error.message, // Include the error message in the response
       });
     }
