@@ -1,23 +1,34 @@
-import { format } from "date-fns";
-import mongoose from "mongoose";
+import { format } from 'date-fns';
+import mongoose from 'mongoose';
 
 const CategorySchema = mongoose.Schema({
-  category: {
+  name: {
     type: String,
-    require: true,
+    required: true, // Fix the typo from "require" to "required"
     unique: true,
   },
-  brands: { type: mongoose.Schema.Types.ObjectId, ref: "brands" },
+  title: {
+    type: String,
+    required: true, // Fix the typo from "require" to "required"
+    unique: true,
+  },
+  image: {
+    type: String,
+    required: true,
+  },
+  imageUrl: {
+    type: String,
+  },
   createdAt: {
     type: String,
-    default: format(new Date(), "MMM dd, yyyy"),
+    default: format(new Date(), 'MMM dd, yyyy'),
   },
   updatedAt: {
     type: String,
-    default: format(new Date(), "MMM dd, yyyy"),
+    default: format(new Date(), 'MMM dd, yyyy'),
   },
 });
 
-const CategoryModel = mongoose.model("categories", CategorySchema);
+const CategoryModel = mongoose.model('categories', CategorySchema);
 
 export default CategoryModel;
