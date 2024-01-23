@@ -1,29 +1,21 @@
 import { format } from 'date-fns';
 import mongoose from 'mongoose';
 
-const CategorySchema = mongoose.Schema({
+const BrandSchema = mongoose.Schema({
   name: {
     type: String,
-    required: true, // Fix the typo from "require" to "required"
+    require: true,
     unique: true,
   },
   title: {
     type: String,
-    required: true, // Fix the typo from "require" to "required"
-    unique: true,
+    require: true,
   },
-  image: {
-    type: String,
-    required: true,
-  },
-  imageUrl: {
-    type: String,
-  },
-  pathIds: [
+  products: [
     {
       id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'paths',
+        ref: 'products',
       },
       name: String,
       title: String,
@@ -39,6 +31,6 @@ const CategorySchema = mongoose.Schema({
   },
 });
 
-const CategoryModel = mongoose.model('categories', CategorySchema);
+const BrandModel = mongoose.model('brands', BrandSchema);
 
-export default CategoryModel;
+export default BrandModel;

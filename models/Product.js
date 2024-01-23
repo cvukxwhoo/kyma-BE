@@ -31,9 +31,16 @@ const ProductSchema = mongoose.Schema({
     type: Number,
     require: true,
   },
-  brands: { type: mongoose.Schema.Types.ObjectId, ref: 'brands' },
-  category: { type: mongoose.Schema.Types.ObjectId, ref: 'categories' },
-  path: { type: mongoose.Schema.Types.ObjectId, ref: 'paths' },
+  byPath: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'paths',
+    require: true,
+  },
+  byCategory: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'categories',
+    require: true,
+  },
   code: {
     type: String,
     require: true,

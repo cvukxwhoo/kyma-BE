@@ -1,7 +1,7 @@
-import { createAccessToken } from "../utils/index.js";
-import CategoryModel from "../models/Category.js";
-import { StatusCodes } from "http-status-codes";
-import PathCategoryModel from "../models/PathCategory.js";
+import { createAccessToken } from '../utils/index.js';
+import CategoryModel from '../models/Category.js';
+import { StatusCodes } from 'http-status-codes';
+import PathCategoryModel from '../models/PathCategory.js';
 
 const categoryController = {
   // Create Category
@@ -18,12 +18,12 @@ const categoryController = {
       // Save the new product to the database
       const savedProduct = await newCategory.save();
       res.status(StatusCodes.CREATED).json({
-        message: "Post Category Successfully!",
+        message: 'Post Category Successfully!',
         data: savedProduct,
       });
     } catch (error) {
       res.status(StatusCodes.BAD_REQUEST).json({
-        message: "Failed to upload category",
+        message: 'Failed to upload category',
         error: error.message, // Include the error message in the response
       });
     }
@@ -55,14 +55,22 @@ const categoryController = {
       // Save the new path
       await newPath.save();
 
+      // Update the category to include the new path information
+      category.pathIds.push({
+        id: newPath._id,
+        name: newPath.name,
+        title: newPath.title,
+      });
+      await category.save();
+
       res.status(StatusCodes.CREATED).json({
         message: `Path ${name} created and associated with category ${categoryName}.`,
         data: newPath,
       });
     } catch (error) {
-      console.error("Error creating path:", error);
+      console.error('Error creating path:', error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Internal Server Error",
+        message: 'Internal Server Error',
         error: error.message,
       });
     }
@@ -73,30 +81,30 @@ const categoryController = {
     try {
       const allCategory = await CategoryModel.find();
       res.status(StatusCodes.OK).json({
-        message: "Get Category Successful",
+        message: 'Get Category Successful',
         data: allCategory,
       });
     } catch (error) {
       res.status(StatusCodes.BAD_REQUEST).json({
-        message: "Failed to get category",
+        message: 'Failed to get category',
         error: error.message, // Include the error message in the response
       });
     }
   },
+
   // GET CATEGORY BY NAME
   getCategoryByName: async (req, res) => {
     try {
       const categoryName = req.params.categoryName;
       const category = await CategoryModel.findOne({ name: categoryName });
-      console.log(category);
       res.status(StatusCodes.OK).json({
-        message: "Get Paths Successfully!",
+        message: 'Get Paths Successfully!',
         data: category,
       });
     } catch (error) {
-      console.error("Error getting category by name", error);
+      console.error('Error getting category by name', error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Internal Server Error",
+        message: 'Internal Server Error',
         error: error.message,
       });
     }
@@ -126,9 +134,9 @@ const categoryController = {
         data: paths,
       });
     } catch (error) {
-      console.error("Error getting paths by category name:", error);
+      console.error('Error getting paths by category name:', error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: "Internal Server Error",
+        message: 'Internal Server Error',
         error: error.message,
       });
     }
