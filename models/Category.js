@@ -19,7 +19,7 @@ const CategorySchema = mongoose.Schema({
   imageUrl: {
     type: String,
   },
-  pathIds: [
+  paths: [
     {
       id: {
         type: mongoose.Schema.Types.ObjectId,
@@ -27,8 +27,31 @@ const CategorySchema = mongoose.Schema({
       },
       name: String,
       title: String,
+      products: [
+        {
+          id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'products',
+          },
+          name: String,
+          title: String,
+          price: Number,
+          discountPrice: Number,
+          warrantyPeriod: Number,
+          origin: String,
+          quanities: Number,
+          code: String,
+          image: String,
+          imageUrl: String,
+          isActive: Boolean,
+          createdAt: String,
+          updatedAt: String,
+          features: Array,
+        },
+      ],
     },
   ],
+
   createdAt: {
     type: String,
     default: format(new Date(), 'MMM dd, yyyy'),

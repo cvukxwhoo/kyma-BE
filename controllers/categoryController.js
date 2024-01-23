@@ -56,7 +56,7 @@ const categoryController = {
       await newPath.save();
 
       // Update the category to include the new path information
-      category.pathIds.push({
+      category.paths.push({
         id: newPath._id,
         name: newPath.name,
         title: newPath.title,

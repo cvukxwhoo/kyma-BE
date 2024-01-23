@@ -7,10 +7,6 @@ const BrandSchema = mongoose.Schema({
     require: true,
     unique: true,
   },
-  title: {
-    type: String,
-    require: true,
-  },
   products: [
     {
       id: {
@@ -19,8 +15,27 @@ const BrandSchema = mongoose.Schema({
       },
       name: String,
       title: String,
+      price: Number,
+      discountPrice: Number,
+      warrantyPeriod: Number,
+      origin: String,
+      quanities: Number,
+      code: String,
+      image: String,
+      imageUrl: String,
+      isActive: Boolean,
+      createdAt: String,
+      updatedAt: String,
+      features: Array,
     },
   ],
+  image: {
+    type: String,
+    require: true,
+  },
+  imageUrl: {
+    type: String,
+  },
   createdAt: {
     type: String,
     default: format(new Date(), 'MMM dd, yyyy'),

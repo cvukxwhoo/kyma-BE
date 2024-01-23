@@ -22,63 +22,20 @@ const PathCategorySchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'products',
       },
-      name: {
-        type: String,
-        require: true,
-      },
-      title: {
-        type: String,
-        require: true,
-      },
-      price: {
-        type: Number,
-        require: true,
-      },
-      discountPrice: {
-        type: Number,
-        require: false,
-      },
-      warrantyPeriod: {
-        type: Number,
-        require: false,
-      },
-      origin: {
-        type: String,
-        require: false,
-      },
-      quanities: {
-        type: Number,
-        require: true,
-      },
-      code: {
-        type: String,
-        require: true,
-        unique: true,
-      },
-      image: {
-        type: String,
-        require: true,
-      },
-      imageUrl: {
-        type: String,
-      },
-      isActive: {
-        type: Boolean,
-        require: false,
-      },
-      features: [
-        {
-          type: String,
-        },
-      ],
-      createdAt: {
-        type: String,
-        default: format(new Date(), 'MMM dd, yyyy'),
-      },
-      updatedAt: {
-        type: String,
-        default: format(new Date(), 'MMM dd, yyyy'),
-      },
+      name: String,
+      title: String,
+      price: Number,
+      discountPrice: Number,
+      warrantyPeriod: Number,
+      origin: String,
+      quanities: Number,
+      code: String,
+      image: String,
+      imageUrl: String,
+      isActive: Boolean,
+      createdAt: String,
+      updatedAt: String,
+      features: Array,
     },
   ],
   createdAt: {
