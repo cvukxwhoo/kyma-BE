@@ -1,5 +1,5 @@
-import { format } from 'date-fns';
-import mongoose from 'mongoose';
+import { format } from "date-fns";
+import mongoose from "mongoose";
 
 const PathCategorySchema = mongoose.Schema({
   name: {
@@ -11,17 +11,21 @@ const PathCategorySchema = mongoose.Schema({
     type: String,
     require: true,
   },
-  byCategory: { type: mongoose.Schema.Types.ObjectId, ref: 'categories' },
+  byCategory: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "categories",
+    require: true,
+  },
   createdAt: {
     type: String,
-    default: format(new Date(), 'MMM dd, yyyy'),
+    default: format(new Date(), "MMM dd, yyyy"),
   },
   updatedAt: {
     type: String,
-    default: format(new Date(), 'MMM dd, yyyy'),
+    default: format(new Date(), "MMM dd, yyyy"),
   },
 });
 
-const PathCategoryModel = mongoose.model('paths', PathCategorySchema);
+const PathCategoryModel = mongoose.model("paths", PathCategorySchema);
 
 export default PathCategoryModel;

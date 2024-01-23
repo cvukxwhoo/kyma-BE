@@ -1,27 +1,38 @@
-import express from 'express';
+import express from "express";
 
 // controllers
-import categoryController from '../controllers/categoryController.js';
+import categoryController from "../controllers/categoryController.js";
 
 // middlewares
-import { upload } from '../middlewares/upload.js';
+import { upload } from "../middlewares/upload.js";
 
 // Controller
 
 const categoryRouter = express.Router();
 
-// Category
-// POST
+// CREATE CATEGORY
 categoryRouter.post(
-  '/',
-  upload.single('image'),
+  "/",
+  upload.single("image"),
   categoryController.createCategory
 );
 
-// GET ALL CATEGORY
-categoryRouter.get('/', categoryController.getAllCategory);
+// CREATE PATH IN CATEGORY
+categoryRouter.post(
+  "/:categoryName/create-path",
+  categoryController.createPathInCategory
+);
 
-// UPDATE CATEGORY BY ID
-categoryRouter.put('/:id', categoryController.updateCategoryById);
+// GET ALL CATEGORY
+categoryRouter.get("/", categoryController.getAllCategory);
+
+// GET CATEGORY BY NAME
+categoryRouter.get("/:categoryName", categoryController.getCategoryByName);
+
+// GET ALL PATH BY NAME CATEGORY
+categoryRouter.get(
+  "/:categoryName/paths",
+  categoryController.getPathsByCategoryName
+);
 
 export default categoryRouter;

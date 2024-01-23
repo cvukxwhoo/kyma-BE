@@ -1,5 +1,5 @@
-import { format } from 'date-fns';
-import mongoose from 'mongoose';
+import { format } from "date-fns";
+import mongoose from "mongoose";
 
 const CategorySchema = mongoose.Schema({
   name: {
@@ -21,14 +21,14 @@ const CategorySchema = mongoose.Schema({
   },
   createdAt: {
     type: String,
-    default: format(new Date(), 'MMM dd, yyyy'),
+    default: format(new Date(), "MMM dd, yyyy"),
   },
   updatedAt: {
     type: String,
-    default: format(new Date(), 'MMM dd, yyyy'),
+    default: format(new Date(), "MMM dd, yyyy"),
   },
 });
 
-const CategoryModel = mongoose.model('categories', CategorySchema);
+const CategoryModel = mongoose.model("categories", CategorySchema);
 
 export default CategoryModel;
