@@ -20,6 +20,7 @@ const UserSchema = mongoose.Schema({
   },
   Role: {
     type: String,
+    default: "user",
   },
   createdAt: {
     type: String,

@@ -6,6 +6,7 @@ import BrandModel from "../models/Brand.js";
 import ProductModel from "../models/Product.js";
 
 const productController = {
+  // CREATE PRODUCT
   createProduct: async (req, res) => {
     try {
       const { categoryName, pathTitle, brandName, ...productData } = req.body;
@@ -92,6 +93,96 @@ const productController = {
       });
     } catch (error) {
       console.error("Error creating product:", error);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+        error: error.message,
+      });
+    }
+  },
+
+  // GET PRODUCT BY CATEGORY
+  getProductsByCategory: async (req, res) => {
+    try {
+      const { categoryName } = req.params;
+
+      // Find the Category
+      const category = await CategoryModel.findOne({ name: categoryName });
+      if (!category) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: `Category with name ${categoryName} not found.`,
+        });
+      }
+
+      // Find products by category
+      const products = await ProductModel.find({ byCategory: category._id });
+
+      res.status(StatusCodes.OK).json({
+        message: `Products found for Category ${categoryName}.`,
+        data: products,
+      });
+    } catch (error) {
+      console.error("Error getting products by category:", error);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+        error: error.message,
+      });
+    }
+  },
+
+  getProductsByPath: async (req, res) => {
+    try {
+      const { pathName } = req.params;
+
+      // Find the PathCategory
+      const pathCategory = await PathCategoryModel.findOne({ name: pathName });
+      if (!pathCategory) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: `PathCategory with name ${pathName} not found.`,
+        });
+      }
+
+      // Find products by path
+      const products = await ProductModel.find({ byPath: pathCategory._id });
+
+      res.status(StatusCodes.OK).json({
+        message: `Products found for PathCategory ${pathName}.`,
+        data: products,
+      });
+    } catch (error) {
+      console.error("Error getting products by path:", error);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+        error: error.message,
+      });
+    }
+  },
+
+  // GET PRODUCT DETAILS
+  getProductById: async (req, res) => {
+    try {
+      // Extract product ID from request parameters
+      const productId = req.params.productId;
+
+      // Find the product by ID
+      const product = await ProductModel.findById(productId).populate(
+        "byBrand",
+        "name -_id"
+      );
+
+      // Check if the product is found
+      if (!product) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: `Product with ID ${productId} not found.`,
+        });
+      }
+
+      // Return the product data
+      res.status(StatusCodes.OK).json({
+        message: `Product with ID ${productId} found.`,
+        data: product,
+      });
+    } catch (error) {
+      console.error("Error getting product by ID:", error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: "Internal Server Error",
         error: error.message,
