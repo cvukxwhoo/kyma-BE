@@ -1,14 +1,14 @@
-import { format } from 'date-fns';
-import { StatusCodes } from 'http-status-codes';
-import CategoryModel from '../models/Category.js';
-import PathCategoryModel from '../models/PathCategory.js';
-import BrandModel from '../models/Brand.js';
-import ProductModel from '../models/Product.js';
+import { format } from "date-fns";
+import { StatusCodes } from "http-status-codes";
+import CategoryModel from "../models/Category.js";
+import PathCategoryModel from "../models/PathCategory.js";
+import BrandModel from "../models/Brand.js";
+import ProductModel from "../models/Product.js";
 
 const productController = {
   createProduct: async (req, res) => {
     try {
-      const { categoryName, pathName, brandName, ...productData } = req.body;
+      const { categoryName, pathTitle, brandName, ...productData } = req.body;
 
       // Find the Category
       const category = await CategoryModel.findOne({ name: categoryName });
@@ -20,15 +20,15 @@ const productController = {
 
       // Find or create the PathCategory
       let pathCategory = await PathCategoryModel.findOne({
-        name: pathName,
+        title: pathTitle,
         byCategory: category._id,
       });
 
       if (!pathCategory) {
         // Create a new PathCategory if not found
         pathCategory = new PathCategoryModel({
-          name: pathName,
-          title: `Title for ${pathName}`, // Adjust accordingly
+          name: pathTitle,
+          title: `Title for ${pathTitle}`, // Adjust accordingly
           byCategory: category._id,
         });
         await pathCategory.save();
@@ -47,7 +47,7 @@ const productController = {
         // Create a new Brand if not found
         brand = new BrandModel({
           name: brandName,
-          image: 'Image URL for brand', // Adjust accordingly
+          image: "Image URL for brand", // Adjust accordingly
           products: [], // Initialize the products array
         });
         await brand.save();
@@ -87,13 +87,13 @@ const productController = {
       await category.save();
 
       res.status(StatusCodes.CREATED).json({
-        message: `Product ${newProduct.name} created and associated with PathCategory ${pathName}, Brand ${brandName}, and Category ${categoryName}.`,
+        message: `Product ${newProduct.name} created and associated with PathCategory ${pathTitle}, Brand ${brandName}, and Category ${categoryName}.`,
         data: newProduct,
       });
     } catch (error) {
-      console.error('Error creating product:', error);
+      console.error("Error creating product:", error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: 'Internal Server Error',
+        message: "Internal Server Error",
         error: error.message,
       });
     }
