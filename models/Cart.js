@@ -1,22 +1,36 @@
-import { format } from "date-fns";
-import mongoose from "mongoose";
+import { format } from 'date-fns';
+import mongoose from 'mongoose';
 
 const CartSchema = mongoose.Schema({
-  productId: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "products", // Assuming you have a Product model
+    ref: 'users',
     required: true,
+    unique: true,
   },
-  quantity: {
-    type: Number,
-    default: 1,
-  },
+  items: [
+    {
+      productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'products',
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        required: true,
+      },
+    },
+  ],
   createdAt: {
     type: String,
-    default: format(new Date(), "MMM dd, yyyy"),
+    default: format(new Date(), 'MMM dd, yyyy'),
+  },
+  updatedAt: {
+    type: String,
+    default: format(new Date(), 'MMM dd, yyyy'),
   },
 });
 
-const CartModel = mongoose.model("carts", CartSchema);
+const CartModel = mongoose.model('carts', CartSchema);
 
 export default CartModel;
