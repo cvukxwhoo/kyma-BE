@@ -1,5 +1,5 @@
-import { format } from 'date-fns';
-import mongoose from 'mongoose';
+import { format } from "date-fns";
+import mongoose from "mongoose";
 
 const CategorySchema = mongoose.Schema({
   name: {
@@ -23,7 +23,7 @@ const CategorySchema = mongoose.Schema({
     {
       id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'paths',
+        ref: "paths",
       },
       name: String,
       title: String,
@@ -31,22 +31,15 @@ const CategorySchema = mongoose.Schema({
         {
           id: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'products',
+            ref: "products",
           },
           name: String,
           title: String,
           price: Number,
           discountPrice: Number,
-          warrantyPeriod: Number,
-          origin: String,
-          quanities: Number,
-          code: String,
           image: String,
           imageUrl: String,
           isActive: Boolean,
-          createdAt: String,
-          updatedAt: String,
-          features: Array,
         },
       ],
     },
@@ -54,14 +47,14 @@ const CategorySchema = mongoose.Schema({
 
   createdAt: {
     type: String,
-    default: format(new Date(), 'MMM dd, yyyy'),
+    default: format(new Date(), "MMM dd, yyyy"),
   },
   updatedAt: {
     type: String,
-    default: format(new Date(), 'MMM dd, yyyy'),
+    default: format(new Date(), "MMM dd, yyyy"),
   },
 });
 
-const CategoryModel = mongoose.model('categories', CategorySchema);
+const CategoryModel = mongoose.model("categories", CategorySchema);
 
 export default CategoryModel;

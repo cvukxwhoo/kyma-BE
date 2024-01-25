@@ -2,18 +2,29 @@ import { format } from "date-fns";
 import mongoose from "mongoose";
 
 const BillSchema = mongoose.Schema({
-  orderId: {
+  customer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "orders",
+    ref: "users",
     required: true,
+    email: String,
+    fullName: String,
   },
-  amount: {
+  phoneNumber: {
     type: Number,
-    required: true,
+    require: true,
   },
-  paymentMethod: {
+  address: {
     type: String,
-    required: true,
+    require: true,
+  },
+  invoice: {
+    type: String,
+    enum: ["company", "individual"],
+    require: true,
+  },
+  note: {
+    type: String,
+    require: false,
   },
   status: {
     type: String,
@@ -26,6 +37,6 @@ const BillSchema = mongoose.Schema({
   },
 });
 
-const BillModel = mongoose.model("brands", BillSchema);
+const BillModel = mongoose.model("bills", BillSchema);
 
 export default BillModel;

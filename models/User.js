@@ -14,10 +14,6 @@ const UserSchema = mongoose.Schema({
     type: String,
     require: true,
   },
-  Avatar: {
-    type: String,
-    require: true,
-  },
   Role: {
     type: String,
     default: "user",
