@@ -1,37 +1,87 @@
-import { StatusCodes } from 'http-status-codes';
-import ProductModel from '../models/Product.js';
-import CartModel from '../models/Cart.js';
+import { StatusCodes } from "http-status-codes";
+import ProductModel from "../models/Product.js";
+import CartModel from "../models/Cart.js";
 
 const cartController = {
   addToCart: async (req, res) => {
-    const { userId } = req.body;
-
     try {
-      const cart = new CartModel({ userId, items: [] });
-      await cart.save();
+      const { productId, quantity } = req.body;
+      const existingCart = await CartModel.findOne();
 
-      res.status(201).json({ message: 'Cart created successfully.' });
-    } catch (error) {
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  },
-  // GET /cart - Get the user's cart
-  getCartContent: async (req, res) => {
-    const userId = req.params.userId;
+      if (existingCart) {
+        // If the cart exists, update the quantity of the existing item or add a new item
+        const existingItem = existingCart.items.find(
+          (item) => item.productId == productId
+        );
 
-    try {
-      const cart = await CartModel.findOne({ userId }).populate(
-        'items.productId',
-        'name price discountPrice'
-      );
+        if (existingItem) {
+          existingItem.quantity++;
+        } else {
+          // Fetch additional information about the product
+          const productInfo = await ProductModel.findById(productId);
 
-      if (cart) {
-        res.status(200).json({ items: cart.items });
+          if (!productInfo) {
+            return res.status(404).json({ error: "Product not found" });
+          }
+
+          const newItem = {
+            productId: productInfo._id,
+            quantity: quantity || 1,
+            title: productInfo.title,
+            price: productInfo.price,
+            discountPrice: productInfo.discountPrice,
+            imageUrl: productInfo.imageUrl,
+          };
+
+          // Push the new item to the existing cart
+          existingCart.items.push(newItem);
+        }
+
+        await existingCart.save();
+        res.status(200).json({
+          message: "Item added to cart successfully",
+          data: existingCart.items,
+        });
       } else {
-        res.status(404).json({ error: 'Cart not found for the user.' });
+        // If the cart doesn't exist, create a new one with the new item
+        const newCart = new CartModel({
+          items: [
+            {
+              productId,
+              quantity: quantity || 1,
+              // Fetch additional information about the product
+              ...(await ProductModel.findById(
+                productId,
+                "title price discountPrice imageUrl"
+              )),
+            },
+          ],
+        });
+
+        await newCart.save();
+        res.status(201).json({
+          message: "Cart created successfully",
+          data: newCart.items,
+        });
       }
     } catch (error) {
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+
+  // GET /cart - Get the user's cart
+  getAllCarts: async (req, res) => {
+    try {
+      const allCarts = await CartModel.find({}).populate(
+        "items.productId",
+        "title price discountPrice imageUrl"
+      );
+
+      res.status(200).json({ carts: allCarts });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   },
 };

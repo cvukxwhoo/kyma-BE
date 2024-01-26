@@ -1,7 +1,8 @@
-import UserModel from '../models/User.js';
-import { StatusCodes } from 'http-status-codes';
-import { createAccessToken } from '../utils/index.js';
-import bcrypt from 'bcrypt';
+import UserModel from "../models/User.js";
+import { StatusCodes } from "http-status-codes";
+import { createAccessToken } from "../utils/index.js";
+import bcrypt from "bcrypt";
+import CartModel from "../models/Cart.js";
 
 const userController = {
   // CREATE NEW USER
@@ -15,7 +16,7 @@ const userController = {
       if (existingUser) {
         return res
           .status(StatusCodes.BAD_REQUEST)
-          .json({ error: 'User already exists with this email' });
+          .json({ error: "User already exists with this email" });
       }
 
       // Hash the password
@@ -40,7 +41,7 @@ const userController = {
       console.error(error);
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'Server error' });
+        .json({ error: "Server error" });
     }
   },
 
@@ -55,7 +56,7 @@ const userController = {
       if (!user) {
         return res
           .status(StatusCodes.BAD_REQUEST)
-          .json({ error: 'Invalid username or password' });
+          .json({ error: "Invalid username or password" });
       }
 
       // Check password
@@ -64,7 +65,7 @@ const userController = {
       if (!isMatch) {
         return res
           .status(StatusCodes.BAD_REQUEST)
-          .json({ error: 'Invalid username or password' });
+          .json({ error: "Invalid username or password" });
       }
 
       // Create access token
@@ -76,7 +77,7 @@ const userController = {
       console.error(error);
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'Server error' });
+        .json({ error: "Server error" });
     }
   },
 };

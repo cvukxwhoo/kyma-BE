@@ -1,18 +1,18 @@
-import express from 'express';
+import express from "express";
 
 // middlewares
 
 // Controller
-import cartController from '../controllers/cartController.js';
+import cartController from "../controllers/cartController.js";
 
 const cartRouter = express.Router();
 
 // PRODUCT
 
 // CREATE
-cartRouter.post('/create', cartController.addToCart);
+cartRouter.post("/create", cartController.addToCart);
 
 // GET
-// cartRouter.get('/', cartController.getCart);
+cartRouter.get("/getCart", cartController.getAllCarts);
 
 export default cartRouter;
