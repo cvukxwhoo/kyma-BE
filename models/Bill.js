@@ -6,9 +6,9 @@ const BillSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",
     required: true,
-    email: String,
-    fullName: String,
   },
+  email: { type: String, required: true },
+  fullName: { type: String, required: true },
   phoneNumber: {
     type: Number,
     require: true,
@@ -19,18 +19,25 @@ const BillSchema = mongoose.Schema({
   },
   invoice: {
     type: String,
-    enum: ["company", "individual"],
     require: true,
   },
-  note: {
+  companyName: {
     type: String,
     require: false,
   },
-  status: {
+  taxCode: {
     type: String,
-    enum: ["Pending", "Success", "Failed"],
-    default: "Pending",
+    require: false,
   },
+  addressCompany: {
+    type: String,
+    require: false,
+  },
+  textareaContent: {
+    type: String,
+    require: false,
+  },
+
   createdAt: {
     type: String,
     default: format(new Date(), "MMM dd, yyyy"),

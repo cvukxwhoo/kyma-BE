@@ -18,6 +18,14 @@ const UserSchema = mongoose.Schema({
     type: String,
     default: "user",
   },
+  bill: [
+    {
+      billId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "bills",
+      },
+    },
+  ],
   createdAt: {
     type: String,
     default: format(new Date(), "MMM dd, yyyy"),

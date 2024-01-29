@@ -20,6 +20,10 @@ const cartSchema = new mongoose.Schema({
       },
     },
   ],
+  bill: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "bills", // Reference to the Bill model
+  },
 });
 
 const CartModel = mongoose.model("carts", cartSchema);
