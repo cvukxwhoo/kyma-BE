@@ -81,6 +81,25 @@ const userController = {
         .json({ error: "Server error" });
     }
   },
+
+  getAllUser: async (req, res) => {
+    try {
+      const user = await UserModel.find();
+      if (!user) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ error: "Not have any users" });
+      }
+      res.status(StatusCodes.OK).json({
+        message: "Get All User Successful",
+        data: user,
+      });
+    } catch (error) {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Server error" });
+    }
+  },
 };
 
 export default userController;

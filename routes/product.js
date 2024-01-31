@@ -17,6 +17,9 @@ productRouter.post(
   productController.createProduct
 );
 
+// GET ALL PRODUCT
+productRouter.get("/", productController.getAllProduct);
+
 // GET PRODUCT BY NAME
 productRouter.get("/:categoryName", productController.getProductsByCategory);
 

@@ -16,4 +16,7 @@ userRouter.post(
 
 userRouter.post("/login", middlewares.login, userController.postLogin);
 
+// GET ALL USER
+userRouter.get("/", userController.getAllUser);
+
 export default userRouter;

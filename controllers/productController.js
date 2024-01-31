@@ -100,6 +100,22 @@ const productController = {
     }
   },
 
+  getAllProduct: async (req, res) => {
+    try {
+      const allProduct = await ProductModel.find();
+      res.status(StatusCodes.OK).json({
+        message: "Get All Product Success",
+        data: allProduct,
+      });
+    } catch (error) {
+      console.error("Error creating product:", error);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+        error: error.message,
+      });
+    }
+  },
+
   // GET PRODUCT BY CATEGORY
   getProductsByCategory: async (req, res) => {
     try {
