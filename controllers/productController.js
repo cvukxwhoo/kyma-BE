@@ -189,6 +189,100 @@ const productController = {
       });
     }
   },
+
+  // EDIT PRODUCT BY ID
+  editProduct: async (req, res) => {
+    try {
+      const { productId } = req.params;
+      const update = {
+        $set: { ...req.body, updatedAt: format(new Date(), "MMM dd, yyyy") },
+      };
+
+      // Retrieve the original product data before the update
+      const originalProduct = await ProductModel.findById(productId);
+
+      console.log("Original Product:", originalProduct);
+
+      const updatedProduct = await ProductModel.findByIdAndUpdate(
+        { _id: productId },
+        update,
+        { new: true }
+      );
+
+      console.log("Updated Product:", updatedProduct);
+
+      if (!updatedProduct) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: `Product with ID ${productId} not found.`,
+        });
+      }
+
+      // Update the related category document
+      await CategoryModel.updateOne(
+        { "paths.id": originalProduct.byPath },
+        {
+          $set: {
+            "paths.$[path].products.$[product]": updatedProduct,
+            updatedAt: format(new Date(), "MMM dd, yyyy"),
+          },
+        },
+        {
+          arrayFilters: [
+            { "path.products.id": productId },
+            { "product.id": productId },
+          ],
+        }
+      );
+
+      // Update the related path category document
+      await PathCategoryModel.updateOne(
+        { "products.id": productId },
+        {
+          $set: {
+            "products.$": updatedProduct,
+            updatedAt: format(new Date(), "MMM dd, yyyy"),
+          },
+        }
+      );
+
+      // Update the related brand document
+      await BrandModel.updateOne(
+        { "products.id": productId },
+        {
+          $set: {
+            "products.$": updatedProduct,
+            updatedAt: format(new Date(), "MMM dd, yyyy"),
+          },
+        }
+      );
+
+      // Return the product data
+      res.status(StatusCodes.OK).json({
+        message: "Update Product Success!",
+        data: updatedProduct,
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Internal Server Error" });
+    }
+  },
+
+  searchProduct: async (req, res) => {
+    const searchTerm = req.query.term;
+    try {
+      const results = await ProductModel.find({
+        name: { $regex: searchTerm, $options: "i" },
+      });
+      res.json(results);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Internal Server Error" });
+    }
+  },
 };
 
 export default productController;

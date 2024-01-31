@@ -24,7 +24,12 @@ productRouter.get("/:categoryName", productController.getProductsByCategory);
 productRouter.get("/path/:pathName", productController.getProductsByPath);
 
 // GET PRODUCT BY ID
-
 productRouter.get("/details/:productId", productController.getProductById);
+
+//  EDIT PRODUCT BY ID
+productRouter.put("/:productId", productController.editProduct);
+
+// SEARCH NAME OF PRODUCTS
+productRouter.get("api/search", productController.searchProduct);
 
 export default productRouter;

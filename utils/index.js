@@ -1,11 +1,11 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 const createAccessToken = (document) => {
   const payload = {
     id: document._id,
   };
-  const newToken = jwt.sign(payload, 'KYMA', {
-    expiresIn: '1h',
+  const newToken = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "1h",
   });
 
   // Save the token to HttpOnly cookie
@@ -16,8 +16,14 @@ const createAccessToken = (document) => {
 };
 
 const verifyToken = (token) => {
-  const checkToken = jwt.verify(token, 'KYMA');
-  return checkToken;
+  try {
+    const checkToken = jwt.verify(token, process.env.JWT_SECRET);
+    return checkToken;
+  } catch (error) {
+    // Handle token verification errors
+    console.error("Token verification failed:", error.message);
+    return null;
+  }
 };
 
 export { createAccessToken, verifyToken };

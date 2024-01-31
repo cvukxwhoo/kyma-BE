@@ -22,6 +22,7 @@ mongoose.connect(
 );
 
 const port = process.env.PORT || 3003;
+process.env.JWT_SECRET;
 
 app.use(cors());
 app.use(express.json());

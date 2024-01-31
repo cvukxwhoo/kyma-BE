@@ -8,7 +8,7 @@ const userController = {
   // CREATE NEW USER
   createNewUser: async (req, res) => {
     try {
-      const { email, password, fullName } = req.body;
+      const { email, password, fullName, role } = req.body;
 
       // Check if the user already exists
       const existingUser = await UserModel.findOne({ email });
@@ -27,6 +27,7 @@ const userController = {
         email,
         password: hashedPassword,
         fullName,
+        role,
       });
 
       // Save the user to the database
