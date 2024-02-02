@@ -102,7 +102,9 @@ const productController = {
 
   getAllProduct: async (req, res) => {
     try {
-      const allProduct = await ProductModel.find();
+      const allProduct = await ProductModel.find()
+        .populate("byCategory", "id title")
+        .populate("byBrand", "id name");
       res.status(StatusCodes.OK).json({
         message: "Get All Product Success",
         data: allProduct,
@@ -180,10 +182,10 @@ const productController = {
       const productId = req.params.productId;
 
       // Find the product by ID
-      const product = await ProductModel.findById(productId).populate(
-        "byBrand",
-        "name -_id"
-      );
+      const product = await ProductModel.findById(productId)
+        .populate("byBrand", "name -_id")
+        .populate("byCategory", "title id")
+        .populate("byPath", "title id");
 
       // Check if the product is found
       if (!product) {
