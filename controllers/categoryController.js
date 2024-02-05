@@ -141,6 +141,38 @@ const categoryController = {
       });
     }
   },
+
+  // GET PATH BY NAME OF CATEGORY
+  getPathsByCategoryId: async (req, res) => {
+    try {
+      const { categoryId } = req.params;
+
+      // Find the category document based on the name
+      const category = await CategoryModel.findOne({ _id: categoryId });
+
+      if (!category) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          message: `Category with name ${categoryId} not found.`,
+        });
+      }
+
+      // Find the paths associated with the specified category ObjectId
+      const paths = await PathCategoryModel.find({
+        byCategory: category._id,
+      });
+
+      res.status(StatusCodes.OK).json({
+        message: `Get Paths for Category ${categoryId} Successfully!`,
+        data: paths,
+      });
+    } catch (error) {
+      console.error("Error getting paths by category name:", error);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: "Internal Server Error",
+        error: error.message,
+      });
+    }
+  },
 };
 
 export default categoryController;

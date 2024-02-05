@@ -4,32 +4,36 @@ import CategoryModel from "../models/Category.js";
 import PathCategoryModel from "../models/PathCategory.js";
 import BrandModel from "../models/Brand.js";
 import ProductModel from "../models/Product.js";
+import { ObjectId } from "mongodb";
 
 const productController = {
   // CREATE PRODUCT
   createProduct: async (req, res) => {
     try {
-      const { categoryName, pathTitle, brandName, ...productData } = req.body;
+      const { categoryId, pathId, brandId, ...productData } = req.body;
 
       // Find the Category
-      const category = await CategoryModel.findOne({ name: categoryName });
+      const category = await CategoryModel.findOne({
+        _id: new ObjectId(categoryId),
+      });
       if (!category) {
         return res.status(StatusCodes.NOT_FOUND).json({
-          message: `Category with name ${categoryName} not found.`,
+          message: `Category with id ${categoryId} not found.`,
         });
       }
+      console.log(category);
 
       // Find or create the PathCategory
       let pathCategory = await PathCategoryModel.findOne({
-        title: pathTitle,
+        _id: pathId,
         byCategory: category._id,
       });
 
       if (!pathCategory) {
         // Create a new PathCategory if not found
         pathCategory = new PathCategoryModel({
-          name: pathTitle,
-          title: `Title for ${pathTitle}`, // Adjust accordingly
+          name: pathId,
+          _id: `Title for ${pathId}`, // Adjust accordingly
           byCategory: category._id,
         });
         await pathCategory.save();
@@ -43,11 +47,11 @@ const productController = {
       }
 
       // Find or create the Brand
-      let brand = await BrandModel.findOne({ name: brandName });
+      let brand = await BrandModel.findOne({ _id: brandId });
       if (!brand) {
         // Create a new Brand if not found
         brand = new BrandModel({
-          name: brandName,
+          name: brandId,
           image: "Image URL for brand", // Adjust accordingly
           products: [], // Initialize the products array
         });
@@ -88,7 +92,7 @@ const productController = {
       await category.save();
 
       res.status(StatusCodes.CREATED).json({
-        message: `Product ${newProduct.name} created and associated with PathCategory ${pathTitle}, Brand ${brandName}, and Category ${categoryName}.`,
+        message: `Product ${newProduct.name} created and associated with PathCategory ${pathId}, Brand ${brandId}, and Category ${categoryId}.`,
         data: newProduct,
       });
     } catch (error) {

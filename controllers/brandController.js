@@ -1,5 +1,5 @@
-import { StatusCodes } from 'http-status-codes';
-import BrandModel from '../models/Brand.js';
+import { StatusCodes } from "http-status-codes";
+import BrandModel from "../models/Brand.js";
 
 const brandController = {
   createBrand: async (req, res) => {
@@ -15,13 +15,30 @@ const brandController = {
       // Save the new product to the database
       const savedBrand = await newBrand.save();
       res.status(StatusCodes.CREATED).json({
-        message: 'Create brand successfully!',
+        message: "Create brand successfully!",
         data: savedBrand,
       });
     } catch (error) {
-      console.error('Error uploading brand:', error);
+      console.error("Error uploading brand:", error);
       res.status(StatusCodes.BAD_REQUEST).json({
-        message: 'Failed to upload brand',
+        message: "Failed to upload brand",
+        error: error.message, // Include the error message in the response
+      });
+    }
+  },
+
+  getAllBrand: async (req, res) => {
+    try {
+      const allBrand = await BrandModel.find();
+
+      res.status(StatusCodes.OK).json({
+        message: "Find All Brand Successfully",
+        data: allBrand,
+      });
+    } catch (error) {
+      console.error("Error find brand:", error);
+      res.status(StatusCodes.NOT_FOUND).json({
+        message: "Failed to find brand",
         error: error.message, // Include the error message in the response
       });
     }

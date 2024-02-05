@@ -29,6 +29,12 @@ categoryRouter.get("/", categoryController.getAllCategory);
 // GET CATEGORY BY NAME
 categoryRouter.get("/:categoryName", categoryController.getCategoryByName);
 
+// GET CATEGORY BY NAME
+categoryRouter.get(
+  "/paths/:categoryId",
+  categoryController.getPathsByCategoryId
+);
+
 // GET ALL PATH BY NAME CATEGORY
 categoryRouter.get(
   "/:categoryName/paths",
