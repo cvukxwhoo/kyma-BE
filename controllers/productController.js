@@ -10,7 +10,8 @@ const productController = {
   // CREATE PRODUCT
   createProduct: async (req, res) => {
     try {
-      const { categoryId, pathId, brandId, ...productData } = req.body;
+      const { categoryId, pathId, brandId, features, ...productData } =
+        req.body;
 
       // Find the Category
       const category = await CategoryModel.findOne({
@@ -21,7 +22,6 @@ const productController = {
           message: `Category with id ${categoryId} not found.`,
         });
       }
-      console.log(category);
 
       // Find or create the PathCategory
       let pathCategory = await PathCategoryModel.findOne({
@@ -58,9 +58,14 @@ const productController = {
         await brand.save();
       }
 
+      const featuresArray = features
+        .split(".")
+        .map((feature) => feature.trim());
+
       // Create a new product and associate it with the PathCategory, Brand, and Category
       const newProduct = new ProductModel({
         ...productData,
+        features: featuresArray,
         byPath: pathCategory._id,
         byCategory: category._id,
         byBrand: brand._id,
@@ -90,6 +95,7 @@ const productController = {
         }
       });
       await category.save();
+      console.log(newProduct);
 
       res.status(StatusCodes.CREATED).json({
         message: `Product ${newProduct.name} created and associated with PathCategory ${pathId}, Brand ${brandId}, and Category ${categoryId}.`,

@@ -1,11 +1,10 @@
-import { format } from 'date-fns';
-import mongoose from 'mongoose';
+import { format } from "date-fns";
+import mongoose from "mongoose";
 
 const PathCategorySchema = mongoose.Schema({
   name: {
     type: String,
     require: true,
-    unique: true,
   },
   title: {
     type: String,
@@ -13,14 +12,14 @@ const PathCategorySchema = mongoose.Schema({
   },
   byCategory: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'categories',
+    ref: "categories",
     require: true,
   },
   products: [
     {
       id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'products',
+        ref: "products",
       },
       name: String,
       title: String,
@@ -40,14 +39,14 @@ const PathCategorySchema = mongoose.Schema({
   ],
   createdAt: {
     type: String,
-    default: format(new Date(), 'MMM dd, yyyy'),
+    default: format(new Date(), "MMM dd, yyyy"),
   },
   updatedAt: {
     type: String,
-    default: format(new Date(), 'MMM dd, yyyy'),
+    default: format(new Date(), "MMM dd, yyyy"),
   },
 });
 
-const PathCategoryModel = mongoose.model('paths', PathCategorySchema);
+const PathCategoryModel = mongoose.model("paths", PathCategorySchema);
 
 export default PathCategoryModel;

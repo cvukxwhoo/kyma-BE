@@ -1,6 +1,6 @@
-import { format } from 'date-fns';
-import { ObjectId } from 'mongodb';
-import mongoose from 'mongoose';
+import { format } from "date-fns";
+import { ObjectId } from "mongodb";
+import mongoose from "mongoose";
 
 const ProductSchema = mongoose.Schema({
   name: {
@@ -33,17 +33,17 @@ const ProductSchema = mongoose.Schema({
   },
   byPath: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'paths',
+    ref: "paths",
     require: true,
   },
   byCategory: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'categories',
+    ref: "categories",
     require: true,
   },
   byBrand: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'brands',
+    ref: "brands",
     require: true,
   },
   code: {
@@ -63,19 +63,19 @@ const ProductSchema = mongoose.Schema({
     require: false,
   },
   features: {
-    type: [],
+    type: [String],
     require: false,
   },
   createdAt: {
     type: String,
-    default: format(new Date(), 'MMM dd, yyyy'),
+    default: format(new Date(), "MMM dd, yyyy"),
   },
   updatedAt: {
     type: String,
-    default: format(new Date(), 'MMM dd, yyyy'),
+    default: format(new Date(), "MMM dd, yyyy"),
   },
 });
 
-const ProductModel = mongoose.model('products', ProductSchema);
+const ProductModel = mongoose.model("products", ProductSchema);
 
 export default ProductModel;
