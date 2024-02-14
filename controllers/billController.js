@@ -1,7 +1,7 @@
-import { StatusCodes } from "http-status-codes";
-import BillModel from "../models/Bill.js";
-import UserModel from "../models/User.js";
-import ProductModel from "../models/Product.js";
+import { StatusCodes } from 'http-status-codes';
+import BillModel from '../models/Bill.js';
+import UserModel from '../models/User.js';
+import ProductModel from '../models/Product.js';
 
 const billController = {
   createBill: async (req, res) => {
@@ -12,12 +12,12 @@ const billController = {
       if (!user) {
         return res
           .status(StatusCodes.NOT_FOUND)
-          .json({ error: "User not found" });
+          .json({ error: 'User not found' });
       }
       // Save each product to the Product model      // Map the product data to the required format
       const products = product.map((productData) => ({
         product: productData.productId,
-        quantity: productData.quantity,
+        quanities: productData.quanities,
         title: productData.title,
         price: productData.price,
       }));
@@ -34,10 +34,10 @@ const billController = {
 
       res.status(StatusCodes.CREATED).json(savedOrder);
     } catch (error) {
-      console.error("Error creating order:", error);
+      console.error('Error creating order:', error);
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: "Internal Server Error" });
+        .json({ error: 'Internal Server Error' });
     }
   },
 };
