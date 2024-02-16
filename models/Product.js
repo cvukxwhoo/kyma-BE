@@ -30,6 +30,7 @@ const ProductSchema = mongoose.Schema({
   quanities: {
     type: Number,
     require: true,
+    min: 0,
   },
   byPath: {
     type: mongoose.Schema.Types.ObjectId,
@@ -74,6 +75,11 @@ const ProductSchema = mongoose.Schema({
     type: String,
     default: format(new Date(), "MMM dd, yyyy"),
   },
+});
+
+ProductSchema.pre("save", function (next) {
+  this.isActive = this.quanities > 0;
+  next();
 });
 
 const ProductModel = mongoose.model("products", ProductSchema);
