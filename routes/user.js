@@ -19,4 +19,7 @@ userRouter.post("/login", middlewares.login, userController.postLogin);
 // GET ALL USER
 userRouter.get("/", userController.getAllUser);
 
+// FIND AN USER
+userRouter.get("/id/:userId", userController.findUser);
+
 export default userRouter;

@@ -1,10 +1,11 @@
-import { format } from 'date-fns';
-import { StatusCodes } from 'http-status-codes';
-import CategoryModel from '../models/Category.js';
-import PathCategoryModel from '../models/PathCategory.js';
-import BrandModel from '../models/Brand.js';
-import ProductModel from '../models/Product.js';
-import { ObjectId } from 'mongodb';
+import { format } from "date-fns";
+import { StatusCodes } from "http-status-codes";
+import CategoryModel from "../models/Category.js";
+import PathCategoryModel from "../models/PathCategory.js";
+import BrandModel from "../models/Brand.js";
+import ProductModel from "../models/Product.js";
+import { ObjectId } from "mongodb";
+import axios from "axios";
 
 const productController = {
   // CREATE PRODUCT
@@ -52,14 +53,14 @@ const productController = {
         // Create a new Brand if not found
         brand = new BrandModel({
           name: brandId,
-          image: 'Image URL for brand', // Adjust accordingly
+          image: "Image URL for brand", // Adjust accordingly
           products: [], // Initialize the products array
         });
         await brand.save();
       }
 
       const featuresArray = features
-        .split('.')
+        .split("|")
         .map((feature) => feature.trim());
 
       // Create a new product and associate it with the PathCategory, Brand, and Category
@@ -73,8 +74,11 @@ const productController = {
 
       // Handle file upload
       if (req.file) {
-        newProduct.image = req.file.path;
-        newProduct.imageUrl = `http://localhost:3002/${req.file.path}`;
+        // newProduct.image = req.file.path;
+        // newProduct.imageUrl = `http://localhost:3002/${req.file.path}`;
+        const compressedImage = await compressImage(req.file.path);
+        newProduct.image = compressedImage.output.url;
+        newProduct.imageUrl = compressedImage.output.url;
       }
 
       // Save the new product
@@ -102,9 +106,9 @@ const productController = {
         data: newProduct,
       });
     } catch (error) {
-      console.error('Error creating product:', error);
+      console.error("Error creating product:", error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: 'Internal Server Error',
+        message: "Internal Server Error",
         error: error.message,
       });
     }
@@ -113,16 +117,16 @@ const productController = {
   getAllProduct: async (req, res) => {
     try {
       const allProduct = await ProductModel.find()
-        .populate('byCategory', 'id title')
-        .populate('byBrand', 'id name');
+        .populate("byCategory", "id title")
+        .populate("byBrand", "id name");
       res.status(StatusCodes.OK).json({
-        message: 'Get All Product Success',
+        message: "Get All Product Success",
         data: allProduct,
       });
     } catch (error) {
-      console.error('Error creating product:', error);
+      console.error("Error creating product:", error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: 'Internal Server Error',
+        message: "Internal Server Error",
         error: error.message,
       });
     }
@@ -149,9 +153,9 @@ const productController = {
         data: products,
       });
     } catch (error) {
-      console.error('Error getting products by category:', error);
+      console.error("Error getting products by category:", error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: 'Internal Server Error',
+        message: "Internal Server Error",
         error: error.message,
       });
     }
@@ -177,9 +181,9 @@ const productController = {
         data: products,
       });
     } catch (error) {
-      console.error('Error getting products by path:', error);
+      console.error("Error getting products by path:", error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: 'Internal Server Error',
+        message: "Internal Server Error",
         error: error.message,
       });
     }
@@ -193,9 +197,9 @@ const productController = {
 
       // Find the product by ID
       const product = await ProductModel.findById(productId)
-        .populate('byBrand', 'name -_id')
-        .populate('byCategory', 'title id')
-        .populate('byPath', 'title id');
+        .populate("byBrand", "name -_id")
+        .populate("byCategory", "title id")
+        .populate("byPath", "title id");
 
       // Check if the product is found
       if (!product) {
@@ -210,9 +214,9 @@ const productController = {
         data: product,
       });
     } catch (error) {
-      console.error('Error getting product by ID:', error);
+      console.error("Error getting product by ID:", error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: 'Internal Server Error',
+        message: "Internal Server Error",
         error: error.message,
       });
     }
@@ -223,13 +227,13 @@ const productController = {
     try {
       const { productId } = req.params;
       const update = {
-        $set: { ...req.body, updatedAt: format(new Date(), 'MMM dd, yyyy') },
+        $set: { ...req.body, updatedAt: format(new Date(), "MMM dd, yyyy") },
       };
 
       // Retrieve the original product data before the update
       const originalProduct = await ProductModel.findById(productId);
 
-      console.log('Original Product:', originalProduct);
+      console.log("Original Product:", originalProduct);
 
       const updatedProduct = await ProductModel.findByIdAndUpdate(
         { _id: productId },
@@ -237,7 +241,7 @@ const productController = {
         { new: true }
       );
 
-      console.log('Updated Product:', updatedProduct);
+      console.log("Updated Product:", updatedProduct);
 
       if (!updatedProduct) {
         return res.status(StatusCodes.NOT_FOUND).json({
@@ -247,53 +251,53 @@ const productController = {
 
       // Update the related category document
       await CategoryModel.updateOne(
-        { 'paths.id': originalProduct.byPath },
+        { "paths.id": originalProduct.byPath },
         {
           $set: {
-            'paths.$[path].products.$[product]': updatedProduct,
-            updatedAt: format(new Date(), 'MMM dd, yyyy'),
+            "paths.$[path].products.$[product]": updatedProduct,
+            updatedAt: format(new Date(), "MMM dd, yyyy"),
           },
         },
         {
           arrayFilters: [
-            { 'path.products.id': productId },
-            { 'product.id': productId },
+            { "path.products.id": productId },
+            { "product.id": productId },
           ],
         }
       );
 
       // Update the related path category document
       await PathCategoryModel.updateOne(
-        { 'products.id': productId },
+        { "products.id": productId },
         {
           $set: {
-            'products.$': updatedProduct,
-            updatedAt: format(new Date(), 'MMM dd, yyyy'),
+            "products.$": updatedProduct,
+            updatedAt: format(new Date(), "MMM dd, yyyy"),
           },
         }
       );
 
       // Update the related brand document
       await BrandModel.updateOne(
-        { 'products.id': productId },
+        { "products.id": productId },
         {
           $set: {
-            'products.$': updatedProduct,
-            updatedAt: format(new Date(), 'MMM dd, yyyy'),
+            "products.$": updatedProduct,
+            updatedAt: format(new Date(), "MMM dd, yyyy"),
           },
         }
       );
 
       // Return the product data
       res.status(StatusCodes.OK).json({
-        message: 'Update Product Success!',
+        message: "Update Product Success!",
         data: updatedProduct,
       });
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'Internal Server Error' });
+        .json({ error: "Internal Server Error" });
     }
   },
 
@@ -301,16 +305,59 @@ const productController = {
     const { name } = req.query;
     try {
       const results = await ProductModel.find({
-        name: { $regex: new RegExp(name, 'i') },
+        name: { $regex: new RegExp(name, "i") },
       });
       res.json(results);
     } catch (error) {
       console.error(error);
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: 'Internal Server Error' });
+        .json({ error: "Internal Server Error" });
     }
   },
+
+  deleteProduct: async (req, res) => {
+    const { productId } = req.params;
+    try {
+      const deleteProduct = await ProductModel.findByIdAndDelete(productId);
+      if (!deleteProduct) {
+        res.status(StatusCodes.NOT_FOUND).json({
+          message: "Cant find any products",
+        });
+      }
+      res.status(StatusCodes.OK).json({
+        message: "Delete Product Successfully",
+        deleteProduct,
+      });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Internal Server Error" });
+    }
+  },
+};
+
+// Function to compress image using TinyPNG API
+const compressImage = async (imagePath) => {
+  try {
+    const response = await axios.post(
+      "https://api.tinify.com/shrink",
+      require("fs").createReadStream(imagePath),
+      {
+        headers: {
+          Authorization: `Basic ${Buffer.from(
+            "api:tRrJYSDrx0ljrczXNVCnQcsY6NCT637p"
+          ).toString("base64")}`,
+          "Content-Type": "application/octet-stream",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error compressing image:", error);
+    throw error;
+  }
 };
 
 export default productController;

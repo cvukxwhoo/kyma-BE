@@ -69,16 +69,21 @@ const ProductSchema = mongoose.Schema({
   },
   createdAt: {
     type: String,
-    default: format(new Date(), "MMM dd, yyyy"),
+    default: format(new Date(), "MMM dd, yyyy, p"),
   },
   updatedAt: {
     type: String,
-    default: format(new Date(), "MMM dd, yyyy"),
+    default: format(new Date(), "MMM dd, yyyy, p"),
   },
 });
 
 ProductSchema.pre("save", function (next) {
   this.isActive = this.quanities > 0;
+  if (!this.createdAt) {
+    this.createdAt = format(new Date(), "MMM dd, yyyy, p");
+  }
+  this.createdAt = format(new Date(), "MMM dd, yyyy, p");
+  this.updatedAt = format(new Date(), "MMM dd, yyyy, p");
   next();
 });
 

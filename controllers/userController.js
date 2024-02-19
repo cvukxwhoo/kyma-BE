@@ -2,7 +2,6 @@ import UserModel from "../models/User.js";
 import { StatusCodes } from "http-status-codes";
 import { createAccessToken } from "../utils/index.js";
 import bcrypt from "bcrypt";
-import CartModel from "../models/Cart.js";
 
 const userController = {
   // CREATE NEW USER
@@ -95,6 +94,27 @@ const userController = {
         data: user,
       });
     } catch (error) {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Server error" });
+    }
+  },
+
+  findUser: async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const user = await UserModel.findById(userId);
+      if (!user) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ error: "User not found" });
+      }
+      res.status(StatusCodes.OK).json({
+        message: "Get User Successful",
+        data: user,
+      });
+    } catch (error) {
+      console.error(error);
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Server error" });

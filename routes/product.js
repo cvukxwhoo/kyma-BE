@@ -35,4 +35,7 @@ productRouter.put("/:productId", productController.editProduct);
 // SEARCH NAME OF PRODUCTS
 productRouter.get("api/search", productController.searchProduct);
 
+// DELETE PRODUCT BY ID
+productRouter.delete("/:productId", productController.deleteProduct);
+
 export default productRouter;
